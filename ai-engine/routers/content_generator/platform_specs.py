@@ -1,0 +1,81 @@
+### 2.2 — `platform_specs.py`
+
+
+# ai_engine/routers/content_generator/platform_specs.py
+
+PLATFORM_SPECS = {
+    "instagram": {
+        "max_chars"            : 2200,
+        "optimal_chars"        : "138-150 pour feed, 300 pour Reels",
+        "recommended_hashtags" : 12,
+        "emoji_usage"          : "Fréquent — 3 à 6 emojis stratégiques",
+        "tone_keywords"        : "inspirant, aspirationnel, authentique, visuel",
+        "cta_examples"         : ["🔗 Lien en bio !", "💾 Save pour plus tard",
+                                  "👇 Tag un ami", "❤️ Double-tap si tu es d'accord"],
+        "hashtag_strategy"     : "Mix populaires + niche + marque",
+        "format_notes"         : "Hook fort dans les 125 premiers caractères",
+        "platform_emoji"       : "📸",
+    },
+    "tiktok": {
+        "max_chars"            : 2200,
+        "optimal_chars"        : "< 150 caractères — ultra court",
+        "recommended_hashtags" : 5,
+        "emoji_usage"          : "Oui — casual, fun, Gen-Z",
+        "tone_keywords"        : "direct, casual, fun, viral, relatable",
+        "cta_examples"         : ["⬆️ Suis pour plus", "💬 Commente 🔥 si tu veux la suite",
+                                  "🔁 Partage à ton meilleur ami"],
+        "hashtag_strategy"     : "#fyp #pourtoi + 2-3 hashtags niche",
+        "format_notes"         : "#fyp #pourtoi quasi-obligatoires. Hook = première phrase = tout.",
+        "platform_emoji"       : "🎵",
+    },
+    "facebook": {
+        "max_chars"            : 63206,
+        "optimal_chars"        : "40-80 mots",
+        "recommended_hashtags" : 2,
+        "emoji_usage"          : "Modéré — 1 à 3 emojis",
+        "tone_keywords"        : "communautaire, conversationnel, accessible",
+        "cta_examples"         : ["Partagez si vous êtes d'accord 👇",
+                                  "Qu'en pensez-vous ? Commentez ci-dessous",
+                                  "Taguez quelqu'un qui devrait voir ça"],
+        "hashtag_strategy"     : "2-3 hashtags pertinents seulement",
+        "format_notes"         : "FB coupe après 3-4 lignes. Essentiel en premier.",
+        "platform_emoji"       : "👥",
+    },
+    "linkedin": {
+        "max_chars"            : 3000,
+        "optimal_chars"        : "150 à 300 mots structurés",
+        "recommended_hashtags" : 3,
+        "emoji_usage"          : "Limité — 0 à 3 max",
+        "tone_keywords"        : "professionnel, expert, insight, valeur, leadership",
+        "cta_examples"         : ["Qu'en pensez-vous ? Je lis tous les commentaires.",
+                                  "Partagez si cela peut aider votre réseau.",
+                                  "Quelle est votre expérience sur ce sujet ?"],
+        "hashtag_strategy"     : "3 hashtags professionnels ciblés",
+        "format_notes"         : "Accroche (1 ligne) → Développement → Conclusion + CTA",
+        "platform_emoji"       : "💼",
+    },
+    "twitter": {
+        "max_chars"            : 280,
+        "optimal_chars"        : "200-250 caractères",
+        "recommended_hashtags" : 1,
+        "emoji_usage"          : "Optionnel — 1 emoji max",
+        "tone_keywords"        : "direct, percutant, opinion, concis",
+        "cta_examples"         : ["RT si vous pensez la même chose.",
+                                  "Répondez avec votre avis.",
+                                  "Thread 🧵 si vous voulez les détails."],
+        "hashtag_strategy"     : "1-2 hashtags tendance uniquement",
+        "format_notes"         : "280 chars max. Opinion claire. Pas d'hésitation.",
+        "platform_emoji"       : "🐦",
+    },
+}
+
+TONE_DESCRIPTIONS = {
+    "professionnel"  : "Sérieux, expert, crédible, vocabulaire soigné",
+    "decontracte"    : "Amical, détendu, accessible, conversationnel",
+    "inspirant"      : "Motivant, émotionnel, aspirationnel, storytelling",
+    "educatif"       : "Pédagogique, informatif, structuré, tips",
+    "humoristique"   : "Léger, drôle, relatable, jeux de mots",
+    "premium"        : "Élégant, exclusif, luxe, vocabulaire haut de gamme",
+    "urgent"         : "Dynamique, FOMO, time-sensitive, offres limitées",
+    "communautaire"  : "Chaleureux, inclusif, bienveillant, nous ensemble",
+}

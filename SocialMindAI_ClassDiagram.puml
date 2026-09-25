@@ -1,0 +1,1166 @@
+@startuml SocialMindAI_ClassDiagram
+
+title Diagramme de Classes — Social Mind AI\nPlateforme SaaS d'Automatisation SMMA propulsée par l'IA
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam classFontSize 13
+skinparam classHeaderBackgroundColor #E8F4FD
+skinparam classBorderColor #2E86AB
+skinparam classArrowColor #2C3E50
+skinparam classBackgroundColor #FDFEFE
+skinparam stereotypeCBackgroundColor #F9F0FF
+skinparam stereotypeIBackgroundColor #E8F8F5
+skinparam noteBackgroundColor #FFFFF0
+skinparam noteBorderColor #888780
+skinparam packageBackgroundColor #F8F9FA
+skinparam packageBorderColor #AEB6BF
+skinparam linetype ortho
+
+' ============================================================
+' PACKAGE : Utilisateurs & Authentification
+' ============================================================
+package "Utilisateurs & Authentification" {
+
+    class User {
+        - id : int
+        - nom : string
+        - prenom : string
+        - email : string
+        - motDePasse : string
+        - role : RoleEnum
+        - statut : StatutEnum
+        - emailVerifie : boolean
+        - dateInscription : datetime
+        - derniereConnexion : datetime
+        - tokenJWT : string
+        - tokenExpiration : datetime
+        - oauthProvider : string
+        - oauthId : string
+        - twoFactorActive : boolean
+        - twoFactorSecret : string
+        --
+        + seConnecter(email : string, mdp : string) : boolean
+        + seDeconnecter() : void
+        + sInscrire(nom : string, email : string, mdp : string, role : RoleEnum) : User
+        + reinitialiserMotDePasse(email : string) : boolean
+        + verifierEmail(token : string) : boolean
+        + activerTwoFactor() : string
+        + desactiverTwoFactor(code : string) : boolean
+        + mettreAJourProfil(donnees : map) : boolean
+        + supprimerCompte() : boolean
+        + exporterDonnees() : JSON
+        # verifierToken(token : string) : boolean
+        # genererToken() : string
+    }
+
+    class UtilisateurStandard {
+        - nbComptesReseauxMax : int = 2
+        - planActif : string
+        - outilsActives : list
+        --
+        + accederOutil(nomOutil : string) : boolean
+        + connecterCompteReseau(reseau : string, token : string) : boolean
+        + consulterTableauDeBord() : DashboardData
+        + consulterResumeSemaine() : ResumeSemaine
+        + consulterCalendrier() : list
+    }
+
+    class UtilisateurProfessionnel {
+        - nbClientsMax : int
+        - stripeConnectId : string
+        - marqueBlanche : boolean
+        - rapportsPDFActives : boolean
+        --
+        + ajouterClient(client : Client) : boolean
+        + supprimerClient(clientId : int) : boolean
+        + basculerEspaceClient(clientId : int) : boolean
+        + consulterTableauDeBordPro() : DashboardProData
+        + genererFactureClient(clientId : int, details : map) : Facture
+        + accederAgentIA(nomAgent : string) : AgentIA
+        + connecterStripeConnect(code : string) : boolean
+    }
+
+    class Administrateur {
+        - niveauAcces : int
+        - sessionExpirationMinutes : int = 30
+        --
+        + gererUtilisateurs() : list
+        + suspendreCompte(userId : int) : boolean
+        + banniCompte(userId : int) : boolean
+        + modifierRoleUtilisateur(userId : int, role : RoleEnum) : boolean
+        + declencherReinitialisationMdp(userId : int) : boolean
+        + supprimerCompteCGPD(userId : int) : boolean
+        + consulterPanneauAdmin() : AdminDashboard
+        + configurerSysteme(config : map) : boolean
+        + activerDesactiverFonctionnalite(flag : string, etat : boolean) : boolean
+        + gererClesAPI(service : string, cle : string) : boolean
+    }
+
+    enum RoleEnum {
+        STANDARD
+        PROFESSIONNEL
+        ADMIN
+    }
+
+    enum StatutEnum {
+        ACTIF
+        SUSPENDU
+        BANNI
+        EN_ATTENTE_VERIFICATION
+    }
+
+    class Session {
+        - id : int
+        - userId : int
+        - token : string
+        - dateCreation : datetime
+        - dateExpiration : datetime
+        - ipAdresse : string
+        - userAgent : string
+        --
+        + creer(userId : int) : Session
+        + invalider() : boolean
+        + estValide() : boolean
+        + prolonger() : boolean
+    }
+}
+
+' ============================================================
+' PACKAGE : Abonnements & Facturation
+' ============================================================
+package "Abonnements & Facturation" {
+
+    class Abonnement {
+        - id : int
+        - userId : int
+        - planId : int
+        - stripeSubscriptionId : string
+        - statut : StatutAbonnementEnum
+        - dateDebut : datetime
+        - dateFin : datetime
+        - dateRenouvellement : datetime
+        - montant : float
+        - devise : string
+        - essaiGratuit : boolean
+        - dateFinEssai : datetime
+        - codePromoApplique : string
+        - remise : float
+        --
+        + activer() : boolean
+        + annuler() : boolean
+        + renouveler() : boolean
+        + regraderPlan(nouveauPlanId : int) : boolean
+        + appliquerCodePromo(code : string) : float
+        + estActif() : boolean
+        + estExpire() : boolean
+        + genererFacturePDF() : PDF
+        + envoyerFactureEmail() : boolean
+    }
+
+    class PlanAbonnement {
+        - id : int
+        - nom : string
+        - cible : string
+        - prix : float
+        - devise : string
+        - periodicite : string
+        - nbPublicationsMax : int
+        - nbClientsMax : int
+        - nbComptesReseauxMax : int
+        - nbCaptionsMax : int
+        - agentsDisponibles : list
+        - outilsDisponibles : list
+        - analyticsAvancees : boolean
+        - facturationClient : boolean
+        - marqueBlanche : boolean
+        - rapportsPDF : boolean
+        - essaiGratuitJours : int
+        - actif : boolean
+        --
+        + obtenirFonctionnalites() : list
+        + verifierLimite(feature : string, valeur : int) : boolean
+        + estAccessiblePar(role : RoleEnum) : boolean
+        + creer(donnees : map) : PlanAbonnement
+        + modifier(donnees : map) : boolean
+        + archiver() : boolean
+    }
+
+    enum StatutAbonnementEnum {
+        ACTIF
+        ESSAI
+        ANNULE
+        EXPIRE
+        EN_RETARD_PAIEMENT
+        EN_ATTENTE
+    }
+
+    class Facture {
+        - id : int
+        - userId : int
+        - abonnementId : int
+        - numero : string
+        - montantHT : float
+        - tva : float
+        - montantTTC : float
+        - devise : string
+        - statut : StatutFactureEnum
+        - dateEmission : datetime
+        - dateEcheance : datetime
+        - datePaiement : datetime
+        - lienPaiement : string
+        - pdfUrl : string
+        --
+        + genererPDF() : PDF
+        + envoyerParEmail() : boolean
+        + marquerCommePayee() : boolean
+        + rembourser() : boolean
+    }
+
+    enum StatutFactureEnum {
+        EN_ATTENTE
+        PAYEE
+        EN_RETARD
+        REMBOURSEE
+        ANNULEE
+    }
+
+    class CodePromo {
+        - id : int
+        - code : string
+        - typeRemise : string
+        - valeur : float
+        - nbUtilisationsMax : int
+        - nbUtilisations : int
+        - dateExpiration : datetime
+        - actif : boolean
+        --
+        + valider(code : string) : boolean
+        + appliquer(montant : float) : float
+        + incrementerUtilisations() : void
+        + estValide() : boolean
+    }
+
+    class PaiementStripe {
+        - id : int
+        - stripePaymentIntentId : string
+        - userId : int
+        - montant : float
+        - devise : string
+        - statut : string
+        - methode : string
+        - dateTransaction : datetime
+        - metadonnees : JSON
+        --
+        + traiter() : boolean
+        + rembourser(montant : float) : boolean
+        + recupererStatut() : string
+        # gererWebhook(event : map) : void
+    }
+
+    class FacturationClient {
+        - id : int
+        - professionnelId : int
+        - clientId : int
+        - stripeConnectAccountId : string
+        - montant : float
+        - description : string
+        - statut : StatutFactureEnum
+        - dateEmission : datetime
+        - dateEcheance : datetime
+        - retainerMensuel : boolean
+        - montantRetainer : float
+        - jourfacturation : int
+        --
+        + creerFacture(details : map) : Facture
+        + envoyerLienPaiement() : boolean
+        + suivrePaiement() : string
+        + activerRetainerMensuel(montant : float, jour : int) : boolean
+        + calculerMRRTotal() : float
+    }
+}
+
+' ============================================================
+' PACKAGE : Gestion des Clients (Pro)
+' ============================================================
+package "Gestion des Clients" {
+
+    class Client {
+        - id : int
+        - professionnelId : int
+        - nom : string
+        - email : string
+        - telephone : string
+        - secteurActivite : string
+        - niche : string
+        - logo : string
+        - siteWeb : string
+        - notes : string
+        - statut : StatutClientEnum
+        - dateAjout : datetime
+        - dateArchivage : datetime
+        - objectifsMarketing : list
+        - kpis : JSON
+        - budgetMensuel : float
+        - reseauxSociaux : list
+        --
+        + ajouterCompteSocial(reseau : string, token : string) : boolean
+        + mettreAJour(donnees : map) : boolean
+        + archiver() : boolean
+        + obtenirStatistiques() : JSON
+        + obtenirFactures() : list
+        + obtenirAgentsActifs() : list
+    }
+
+    enum StatutClientEnum {
+        ACTIF
+        ARCHIVE
+        EN_ATTENTE_ONBOARDING
+    }
+
+    class CompteReseauSocial {
+        - id : int
+        - userId : int
+        - clientId : int
+        - plateforme : PlateformeEnum
+        - nomCompte : string
+        - accountId : string
+        - accessToken : string
+        - refreshToken : string
+        - tokenExpiration : datetime
+        - connecte : boolean
+        - dateConnexion : datetime
+        - followersCount : int
+        - type : string
+        --
+        + connecter(token : string) : boolean
+        + deconnecter() : boolean
+        + rafraichirToken() : boolean
+        + estConnecte() : boolean
+        + obtenirMetriques() : JSON
+        + publier(contenu : Contenu) : boolean
+    }
+
+    enum PlateformeEnum {
+        INSTAGRAM
+        FACEBOOK
+        TIKTOK
+        TWITTER_X
+        LINKEDIN
+        YOUTUBE
+    }
+
+    class CRMClient {
+        - id : int
+        - clientId : int
+        - jalons : list
+        - projets : list
+        - historiqueInteractions : list
+        - dateProchainContact : datetime
+        - scoreRelation : int
+        --
+        + ajouterJalon(titre : string, date : datetime) : boolean
+        + marquerJalonComplete(jalonId : int) : boolean
+        + ajouterNote(texte : string) : boolean
+        + obtenirHistorique() : list
+        + calculerScoreRelation() : int
+    }
+}
+
+' ============================================================
+' PACKAGE : Agents IA
+' ============================================================
+package "Agents IA" {
+
+    abstract class AgentIA {
+        - id : int
+        - nom : string
+        - description : string
+        - version : string
+        - statut : StatutAgentEnum
+        - modeleIA : string
+        - nbAppelsJour : int
+        - latenceMoyenne : float
+        - utilisationMemoire : float
+        - profondeurFileAttente : int
+        - coutJour : float
+        - coutMois : float
+        - dateCreation : datetime
+        - actif : boolean
+        --
+        + {abstract} executer(params : map) : JSON
+        + {abstract} obtenirCapacites() : list
+        + verifierSante() : boolean
+        + activer() : void
+        + desactiver() : void
+        + reinitialiser() : void
+        + obtenirStatistiques() : JSON
+        + journaliserActivite(action : string, resultat : JSON) : void
+        # appelerLLM(prompt : string) : string
+        # gererErreur(erreur : Exception) : void
+    }
+
+    enum StatutAgentEnum {
+        EN_LIGNE
+        INACTIF
+        ERREUR
+        DESACTIVE
+        EN_TRAITEMENT
+    }
+
+    class AgentChefDeCompte {
+        - whisperModel : string
+        - gpt4oModel : string
+        - tailleMaxFichierMo : int = 200
+        - formatsAudio : list
+        --
+        + telechargerEnregistrement(fichier : File) : string
+        + transcrireAudio(cheminFichier : string) : string
+        + extraireInfosMarketing(transcription : string) : JSON
+        + genererStrategieMarketing30Jours(profil : JSON) : PDF
+        + creerProfilClient(infos : JSON) : Client
+        + genererDocumentOnboarding(clientId : int) : PDF
+        + executer(params : map) : JSON
+        + obtenirCapacites() : list
+        - structurerProfilJSON(donnees : map) : JSON
+        - orchestrerPipeline(fichier : File) : JSON
+    }
+
+    class AgentGestionnaireReseaux {
+        - intervalleCollecteMinutes : int = 60
+        - seuils_engagement : map
+        --
+        + planifierPublication(contenu : Contenu, plateforme : PlateformeEnum) : boolean
+        + publierContenu(contenu : Contenu) : boolean
+        + surveillerCommentaires(compteId : int) : list
+        + classerSentiment(commentaire : string) : string
+        + genererReponseCommentaire(commentaire : string, voixMarque : string) : string
+        + predireHoraireOptimal(compteId : int) : datetime
+        + collecterMetriques(compteId : int) : JSON
+        + filtrerSpam(commentaire : string) : boolean
+        + executer(params : map) : JSON
+        + obtenirCapacites() : list
+    }
+
+    class AgentStrategeContenu {
+        - fenêtreAnalyseSemaines : int = 4
+        --
+        + analyserNiche(niche : string) : JSON
+        + detecterTendances(niche : string) : list
+        + genererCalendrierHebdomadaire(clientId : int) : CalendrierContenu
+        + suggererHashtags(sujet : string, niche : string) : list
+        + genererPiliersContenu(profil : JSON) : list
+        + recommanderFrequencePublication(plateforme : PlateformeEnum) : map
+        + analyserConcurrents(concurrents : list) : JSON
+        + executer(params : map) : JSON
+        + obtenirCapacites() : list
+        - appliquerBERTopic(textes : list) : list
+        - scorerHashtags(hashtags : list) : map
+    }
+
+    class AgentCreateurContenu {
+        - modeleImage : string
+        - nbVariantesLegende : int = 3
+        --
+        + genererLegende(sujet : string, plateforme : PlateformeEnum, ton : string) : list
+        + genererImageVisuel(prompt : string) : string
+        + genererScriptVideo(sujet : string, duree : int) : string
+        + adapterTonPlateforme(contenu : string, plateforme : PlateformeEnum) : string
+        + appliquerVoixMarque(contenu : string, exemples : list) : string
+        + stockerContenuPourApprobation(clientId : int, contenu : Contenu) : boolean
+        + executer(params : map) : JSON
+        + obtenirCapacites() : list
+        - selectionnerModeleImage(qualite : string) : string
+    }
+
+    class AgentAnalyticsIA {
+        - intervalleCollecteHeures : int = 6
+        - horizonPrevisionJours : int = 30
+        --
+        + collecterDonneesPlateforme(compteId : int) : JSON
+        + prevoyerCroissance(compteId : int) : JSON
+        + predireEngagement(contenu : Contenu) : float
+        + genererRapportHebdomadaire(clientId : int) : PDF
+        + genererRapportMensuel(clientId : int) : PDF
+        + identifierMeilleurePublication(clientId : int) : Publication
+        + calculerROI(clientId : int) : float
+        + obtenirResumeSemaine(userId : int) : ResumeSemaine
+        + executer(params : map) : JSON
+        + obtenirCapacites() : list
+        - appliquerProphet(donnees : list) : JSON
+        - appliquerXGBoost(features : map) : float
+    }
+
+    class AgentOptimisationPub {
+        - seuilSousPerformanceCTR : float = 0.02
+        --
+        + connecterMetaAds(clientId : int, token : string) : boolean
+        + connecterGoogleAds(clientId : int, token : string) : boolean
+        + collecterMetriquesCampagne(campaignId : string) : JSON
+        + reallouerBudget(campaignId : string) : map
+        + identifierPubliciteSousPerformante(campaignId : string) : list
+        + suggererNouveauCreatif(publiciteId : string) : Contenu
+        + genererRapportROI(clientId : int) : PDF
+        + predireSegmentAudience(clientId : int) : list
+        + executer(params : map) : JSON
+        + obtenirCapacites() : list
+        - optimiserLineairement(budgets : map) : map
+    }
+
+    class AgentVeilleConcurrentielle {
+        - nbConcurrentsMax : int = 10
+        - intervalleScrapingHeures : int = 24
+        --
+        + ajouterConcurrent(identifiant : string, plateforme : PlateformeEnum) : boolean
+        + scraperDonneesPubliques(concurrentId : int) : JSON
+        + analyserSentimentLegendes(textes : list) : JSON
+        + clustererContenu(donnees : list) : list
+        + detecterPatternViral(concurrentId : int) : list
+        + genererRecommandationDifferentiation(clientId : int) : string
+        + genererRapportVeille(clientId : int) : PDF
+        + executer(params : map) : JSON
+        + obtenirCapacites() : list
+        - appliquerKMeans(vecteurs : list) : list
+        - appliquerVADER(texte : string) : float
+    }
+
+    class JournalAgent {
+        - id : int
+        - agentId : int
+        - userId : int
+        - action : string
+        - parametresEntree : JSON
+        - resultatSortie : JSON
+        - statut : string
+        - niveauLog : string
+        - messageErreur : string
+        - dateExecution : datetime
+        - dureeMs : int
+        - coutTokens : int
+        --
+        + enregistrer() : boolean
+        + obtenirParAgent(agentId : int) : list
+        + filtrerParNiveau(niveau : string) : list
+        + supprimer() : boolean
+        + exporterCSV() : File
+    }
+
+    class StatistiquesAgent {
+        - id : int
+        - agentId : int
+        - date : date
+        - nbAppels : int
+        - nbSucces : int
+        - nbEchecs : int
+        - latenceMoyenneMs : float
+        - coutJour : float
+        - tokensUtilises : int
+        --
+        + calculerTauxSucces() : float
+        + obtenirParPeriode(debut : date, fin : date) : list
+        + genererRapport() : JSON
+    }
+}
+
+' ============================================================
+' PACKAGE : Contenu & Publications
+' ============================================================
+package "Contenu & Publications" {
+
+    class Contenu {
+        - id : int
+        - userId : int
+        - clientId : int
+        - agentSourceId : int
+        - type : TypeContenuEnum
+        - texte : string
+        - hashtags : list
+        - callToAction : string
+        - mediaUrl : string
+        - mediaType : string
+        - plateforme : PlateformeEnum
+        - ton : string
+        - statut : StatutContenuEnum
+        - dateCreation : datetime
+        - dateModification : datetime
+        - scoreEngagementPredit : float
+        --
+        + creer(params : map) : Contenu
+        + modifier(params : map) : boolean
+        + approuver() : boolean
+        + rejeter(raison : string) : boolean
+        + publier() : boolean
+        + dupliquer() : Contenu
+        + adapterPourPlateforme(plateforme : PlateformeEnum) : Contenu
+    }
+
+    enum TypeContenuEnum {
+        POST_STATIQUE
+        REEL
+        STORY
+        CARROUSEL
+        VIDEO
+        SCRIPT_VIDEO
+        LEGENDE
+        IMAGE
+    }
+
+    enum StatutContenuEnum {
+        BROUILLON
+        EN_ATTENTE_APPROBATION
+        APPROUVE
+        REJETE
+        PUBLIE
+        PLANIFIE
+    }
+
+    class Publication {
+        - id : int
+        - contenuId : int
+        - compteReseauId : int
+        - datePlanifiee : datetime
+        - datePublication : datetime
+        - statut : StatutPublicationEnum
+        - postIdPlateforme : string
+        - nbLikes : int
+        - nbCommentaires : int
+        - nbPartages : int
+        - portee : int
+        - impressions : int
+        - tauxEngagement : float
+        --
+        + planifier(date : datetime) : boolean
+        + publier() : boolean
+        + annuler() : boolean
+        + collecterMetriques() : JSON
+        + calculerTauxEngagement() : float
+    }
+
+    enum StatutPublicationEnum {
+        PLANIFIEE
+        PUBLIEE
+        ECHOUEE
+        ANNULEE
+        EN_ATTENTE
+    }
+
+    class CalendrierContenu {
+        - id : int
+        - userId : int
+        - clientId : int
+        - semaine : date
+        - publications : list
+        - statut : string
+        - genereParIA : boolean
+        --
+        + generer(clientId : int, semaine : date) : CalendrierContenu
+        + accepterJour(jour : int) : boolean
+        + modifierJour(jour : int, contenu : Contenu) : boolean
+        + regenererJour(jour : int) : Contenu
+        + obtenirPublicationsASemaine() : list
+        + exporterICS() : File
+    }
+
+    class Commentaire {
+        - id : int
+        - publicationId : int
+        - auteur : string
+        - texte : string
+        - sentiment : string
+        - categorie : CategorieCommentaireEnum
+        - reponseSuggereeIA : string
+        - reponseApprouvee : string
+        - reponduAutomatiquement : boolean
+        - signale : boolean
+        - masque : boolean
+        - date : datetime
+        --
+        + classerSentiment() : string
+        + genererReponseIA() : string
+        + approuverReponse(reponse : string) : boolean
+        + masquer() : boolean
+        + signaler() : boolean
+    }
+
+    enum CategorieCommentaireEnum {
+        POSITIF
+        NEGATIF
+        QUESTION
+        SPAM
+        NEUTRE
+    }
+
+    class Hashtag {
+        - id : int
+        - texte : string
+        - niche : string
+        - volume : string
+        - scoreRelevance : float
+        - tendance : boolean
+        - dateMiseAJour : date
+        --
+        + sauvegarder(userId : int) : boolean
+        + obtenirParNiche(niche : string) : list
+        + obtenirTendances() : list
+    }
+
+    class ResumeSemaine {
+        - id : int
+        - userId : int
+        - clientId : int
+        - semaine : date
+        - porteeTotal : int
+        - meilleurePublication : string
+        - evolutionFollowers : int
+        - taux_engagement_moyen : float
+        - recommandationIA : string
+        - graphiqueTendance : string
+        - envoiEmail : boolean
+        - dateEnvoi : datetime
+        --
+        + generer(userId : int, semaine : date) : ResumeSemaine
+        + envoyerParEmail() : boolean
+        + afficherDansApp() : JSON
+    }
+}
+
+' ============================================================
+' PACKAGE : Analytiques & Performance
+' ============================================================
+package "Analytiques & Performance" {
+
+    class MetriqueEngagement {
+        - id : int
+        - compteReseauId : int
+        - clientId : int
+        - date : datetime
+        - plateforme : PlateformeEnum
+        - likes : int
+        - commentaires : int
+        - partages : int
+        - portee : int
+        - impressions : int
+        - clics : int
+        - nouveauxFollowers : int
+        - tauxEngagement : float
+        --
+        + collecter(compteId : int) : MetriqueEngagement
+        + calculerTauxEngagement() : float
+        + obtenirParPeriode(debut : date, fin : date) : list
+        + obtenirMeilleurePublication() : Publication
+    }
+
+    class RapportAnalytics {
+        - id : int
+        - clientId : int
+        - userId : int
+        - periode : string
+        - dateDebut : date
+        - dateFin : date
+        - donnees : JSON
+        - pdfUrl : string
+        - marqueBlanche : boolean
+        - dateGeneration : datetime
+        --
+        + generer(clientId : int, periode : string) : RapportAnalytics
+        + exporterPDF() : File
+        + envoyerParEmail(destinataire : string) : boolean
+        + obtenirDonnees() : JSON
+    }
+
+    class CampagnePublicitaire {
+        - id : int
+        - clientId : int
+        - plateforme : string
+        - externalCampaignId : string
+        - nom : string
+        - statut : string
+        - budgetJournalier : float
+        - budgetTotal : float
+        - depenseTotal : float
+        - ctr : float
+        - cpc : float
+        - roas : float
+        - conversions : int
+        - dateDebut : date
+        - dateFin : date
+        --
+        + creer(details : map) : CampagnePublicitaire
+        + optimiserBudget() : map
+        + suspendre() : boolean
+        + genererRapportROI() : JSON
+        + obtenirMetriques() : JSON
+    }
+
+    class Concurrent {
+        - id : int
+        - clientId : int
+        - identifiant : string
+        - plateforme : PlateformeEnum
+        - followersCount : int
+        - tauxEngagementMoyen : float
+        - frequencePublication : float
+        - themesContenu : list
+        - patternViraux : list
+        - dernierScraping : datetime
+        --
+        + scraperDonnees() : JSON
+        + analyserStrategieContenu() : JSON
+        + detecterPublicationsVirales() : list
+        + obtenirEvolutionFollowers() : list
+    }
+}
+
+' ============================================================
+' PACKAGE : Marketplace SMMA
+' ============================================================
+package "Marketplace SMMA" {
+
+    class ProfilAgence {
+        - id : int
+        - userId : int
+        - nomAgence : string
+        - description : string
+        - anneeCreation : int
+        - logoUrl : string
+        - coverImageUrl : string
+        - videoUrl : string
+        - siteWeb : string
+        - niches : list
+        - services : list
+        - tarifsIndicatifs : map
+        - tailleEquipe : int
+        - competencesCles : list
+        - reseauxSociaux : map
+        - noteGlobale : float
+        - nbAvis : int
+        - scoreActivite : float
+        - indexMarketplace : boolean
+        --
+        + creer(donnees : map) : ProfilAgence
+        + mettreAJour(donnees : map) : boolean
+        + calculerNoteGlobale() : float
+        + calculerScoreActivite() : float
+        + obtenirPortfolio() : list
+        + obtenirEtudeCas() : list
+        + obtenirTemoignages() : list
+        + indexerDansMarketplace() : boolean
+    }
+
+    class EtudeDeCas {
+        - id : int
+        - agenceId : int
+        - titre : string
+        - problematique : string
+        - strategieDeployee : string
+        - kpisResultats : JSON
+        - secteur : string
+        - mediaUrls : list
+        - datePublication : datetime
+        - actif : boolean
+        --
+        + creer(donnees : map) : EtudeDeCas
+        + publier() : boolean
+        + archiver() : boolean
+    }
+
+    class TemoignageClient {
+        - id : int
+        - agenceId : int
+        - entrepriseId : int
+        - note : int
+        - commentaire : string
+        - secteur : string
+        - verifie : boolean
+        - dateDepot : datetime
+        --
+        + deposer(agenceId : int, note : int, commentaire : string) : boolean
+        + verifier() : boolean
+        + signaler() : boolean
+    }
+
+    class RecommandationIA {
+        - id : int
+        - entrepriseId : int
+        - agencesRecommandees : list
+        - scoreCompatibilite : map
+        - algorithme : string
+        - dateGeneration : datetime
+        --
+        + generer(entrepriseId : int) : list
+        + enregistrerInteraction(agenceId : int, type : string) : void
+        + reentrainerModele() : boolean
+        + obtenirTop10() : list
+    }
+
+    class MessageInterne {
+        - id : int
+        - expediteurId : int
+        - destinataireId : int
+        - sujet : string
+        - contenu : string
+        - lu : boolean
+        - dateEnvoi : datetime
+        - dateLecture : datetime
+        --
+        + envoyer() : boolean
+        + marquerCommeLu() : boolean
+        + archiver() : boolean
+        + repondre(contenu : string) : MessageInterne
+    }
+}
+
+' ============================================================
+' PACKAGE : Administration
+' ============================================================
+package "Administration" {
+
+    class JournalAudit {
+        - id : int
+        - adminId : int
+        - action : string
+        - cible : string
+        - cibleId : int
+        - ancienneValeur : JSON
+        - nouvelleValeur : JSON
+        - ipAdresse : string
+        - date : datetime
+        --
+        + enregistrer(action : string, cible : string) : boolean
+        + obtenirParAdmin(adminId : int) : list
+        + obtenirParCible(cible : string) : list
+        + supprimerApres30Jours() : int
+    }
+
+    class ConfigurationSysteme {
+        - id : int
+        - cle : string
+        - valeur : string
+        - description : string
+        - type : string
+        - sensible : boolean
+        - modifiePar : int
+        - dateModification : datetime
+        --
+        + lire(cle : string) : string
+        + ecrire(cle : string, valeur : string) : boolean
+        + obtenirTout() : map
+        + rotateCleAPI(service : string) : boolean
+    }
+
+    class CleAPI {
+        - id : int
+        - service : string
+        - cleChiffree : string
+        - actif : boolean
+        - dateCreation : datetime
+        - derniereUtilisation : datetime
+        - quota : int
+        - quotaUtilise : int
+        --
+        + obtenirCle() : string
+        + tourner() : boolean
+        + verifierQuota() : boolean
+        + incrementerUsage() : void
+    }
+
+    class ModerationContenu {
+        - id : int
+        - contenuId : int
+        - typeSignalement : string
+        - signalePar : int
+        - statut : string
+        - actionPrise : string
+        - traitePar : int
+        - dateSignalement : datetime
+        - dateTraitement : datetime
+        --
+        + signaler(contenuId : int, type : string) : boolean
+        + traiter(action : string) : boolean
+        + rejeter() : boolean
+        + obtenirFileRevision() : list
+    }
+
+    class DemandeRGPD {
+        - id : int
+        - userId : int
+        - type : TypeRGPDEnum
+        - statut : string
+        - datedemande : datetime
+        - dateLimiteTraitement : datetime
+        - dateTraitement : datetime
+        - traitePar : int
+        --
+        + creer(userId : int, type : TypeRGPDEnum) : DemandeRGPD
+        + traiter() : boolean
+        + exporterDonnees() : File
+        + supprimerDonnees() : boolean
+        + obtenirEnAttente() : list
+    }
+
+    enum TypeRGPDEnum {
+        EFFACEMENT
+        EXPORT
+        RECTIFICATION
+        OPT_OUT
+    }
+}
+
+' ============================================================
+' PACKAGE : Notifications
+' ============================================================
+package "Notifications" {
+
+    class Notification {
+        - id : int
+        - userId : int
+        - titre : string
+        - message : string
+        - type : TypeNotificationEnum
+        - lu : boolean
+        - actionUrl : string
+        - dateCreation : datetime
+        - dateLecture : datetime
+        --
+        + envoyer() : boolean
+        + marquerCommeLue() : boolean
+        + obtenirNonLues(userId : int) : list
+        + supprimerAnciennes() : int
+    }
+
+    enum TypeNotificationEnum {
+        RAPPEL_PUBLICATION
+        SUGGESTION_IA
+        ALERTE_ABONNEMENT
+        RAPPORT_DISPONIBLE
+        COMMENTAIRE_SIGNALE
+        PAIEMENT_RECU
+        ERREUR_AGENT
+    }
+
+    class EmailService {
+        - provider : string
+        - templateDir : string
+        --
+        + envoyerVerification(userId : int) : boolean
+        + envoyerReinitialisationMdp(userId : int) : boolean
+        + envoyerFacture(userId : int, factureId : int) : boolean
+        + envoyerResumeSemaine(userId : int, resumeId : int) : boolean
+        + envoyerRapport(userId : int, rapportId : int) : boolean
+        + envoyerNotification(userId : int, message : string) : boolean
+        # chargerTemplate(nom : string) : string
+        # substituerVariables(template : string, variables : map) : string
+    }
+}
+
+' ============================================================
+' RELATIONS — HERITAGE
+' ============================================================
+
+User <|-- UtilisateurStandard
+User <|-- UtilisateurProfessionnel
+User <|-- Administrateur
+
+AgentIA <|-- AgentChefDeCompte
+AgentIA <|-- AgentGestionnaireReseaux
+AgentIA <|-- AgentStrategeContenu
+AgentIA <|-- AgentCreateurContenu
+AgentIA <|-- AgentAnalyticsIA
+AgentIA <|-- AgentOptimisationPub
+AgentIA <|-- AgentVeilleConcurrentielle
+
+' ============================================================
+' RELATIONS — ASSOCIATIONS & COMPOSITIONS
+' ============================================================
+
+' User <-> Session
+User "1" -- "0..*" Session : possède >
+
+' User <-> Abonnement
+User "1" -- "0..1" Abonnement : souscrit à >
+Abonnement "0..*" -- "1" PlanAbonnement : correspond à >
+
+' Abonnement <-> Facture
+Abonnement "1" -- "0..*" Facture : génère >
+Abonnement -- CodePromo : utilise >
+Abonnement -- PaiementStripe : traité via >
+
+' User <-> RoleEnum
+User -- RoleEnum : a >
+User -- StatutEnum : a >
+
+' UtilisateurProfessionnel <-> Client
+UtilisateurProfessionnel "1" -- "0..*" Client : gère >
+
+' Client <-> CRMClient (Composition)
+Client "1" *-- "1" CRMClient : contient >
+
+' Client <-> CompteReseauSocial
+Client "1" -- "0..*" CompteReseauSocial : possède >
+UtilisateurStandard "1" -- "0..2" CompteReseauSocial : connecte >
+
+' UtilisateurProfessionnel <-> FacturationClient
+UtilisateurProfessionnel "1" -- "0..*" FacturationClient : émet >
+FacturationClient "0..*" -- "1" Client : concerne >
+FacturationClient "1" -- "0..*" Facture : génère >
+
+' Agent <-> User
+AgentIA "0..*" -- "1" User : utilisé par >
+AgentIA "1" -- "0..*" JournalAgent : enregistre dans >
+AgentIA "1" -- "0..*" StatistiquesAgent : produit >
+
+' Agent -> Contenu
+AgentIA "0..*" ..> Contenu : génère >
+AgentCreateurContenu "1" ..> Contenu : <<crée>> >
+AgentStrategeContenu "1" ..> CalendrierContenu : <<génère>> >
+AgentAnalyticsIA "1" ..> ResumeSemaine : <<produit>> >
+AgentAnalyticsIA "1" ..> RapportAnalytics : <<exporte>> >
+AgentChefDeCompte "1" ..> Client : <<crée profil>> >
+
+' Contenu <-> Publication
+Contenu "1" -- "0..*" Publication : planifiée dans >
+Publication "0..*" -- "1" CompteReseauSocial : publiée sur >
+Publication "1" -- "0..*" Commentaire : reçoit >
+Publication -- MetriqueEngagement : mesurée par >
+
+' CalendrierContenu
+CalendrierContenu "1" *-- "0..*" Contenu : planifie >
+
+' Concurrent <-> Client
+Client "1" -- "0..*" Concurrent : surveille >
+AgentVeilleConcurrentielle "1" ..> Concurrent : <<analyse>> >
+
+' CampagnePublicitaire <-> Client
+Client "1" -- "0..*" CampagnePublicitaire : possède >
+AgentOptimisationPub "1" ..> CampagnePublicitaire : <<optimise>> >
+
+' MetriqueEngagement
+CompteReseauSocial "1" -- "0..*" MetriqueEngagement : collecte >
+
+' Marketplace
+UtilisateurProfessionnel "1" -- "0..1" ProfilAgence : crée >
+ProfilAgence "1" *-- "0..*" EtudeDeCas : contient >
+ProfilAgence "1" -- "0..*" TemoignageClient : reçoit >
+RecommandationIA "0..*" -- "0..*" ProfilAgence : recommande >
+RecommandationIA "0..*" -- "1" Client : générée pour >
+UtilisateurStandard "1" -- "0..*" MessageInterne : envoie >
+UtilisateurProfessionnel "1" -- "0..*" MessageInterne : envoie >
+
+' Administration
+Administrateur "1" -- "0..*" JournalAudit : produit >
+Administrateur "1" -- "1" ConfigurationSysteme : configure >
+ConfigurationSysteme "1" *-- "0..*" CleAPI : stocke >
+Administrateur "1" -- "0..*" ModerationContenu : traite >
+Administrateur "1" -- "0..*" DemandeRGPD : traite >
+ModerationContenu "0..*" -- "1" Contenu : concerne >
+
+' Notifications
+User "1" -- "0..*" Notification : reçoit >
+EmailService ..> User : <<envoie à>> >
+EmailService ..> Notification : <<déclenche>> >
+
+' Hashtag
+Hashtag "0..*" -- "0..*" Contenu : associé à >
+AgentStrategeContenu ..> Hashtag : <<suggère>> >
+
+@enduml

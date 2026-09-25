@@ -28,3 +28,28 @@ Homestead.json
 .env.production
 .phpactor.json
 auth.json
+
+# ── Frontend (React/Vite) ────────────────────────────────────
+frontend/dist
+frontend/dist-ssr
+*.local
+
+# ── AI Engine (Python/FastAPI) ───────────────────────────────
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+ai-engine/outputs/
+
+# ── Runtime-generated artifacts (test/report outputs, not source) ─
+outputs/
+
+# ── Editors / OS ──────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db

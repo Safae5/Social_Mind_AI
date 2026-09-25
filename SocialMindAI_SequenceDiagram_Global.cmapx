@@ -1,0 +1,20 @@
+<map id="SocialMindAI_SequenceDiagram_Global_map" name="SocialMindAI_SequenceDiagram_Global_map">
+<area shape="rect" id="id1" href="Suggérer" title="Suggérer" alt="" coords="93,1279,163,1292"/>
+<area shape="rect" id="id2" href="Connexion" title="Connexion" alt="" coords="272,418,350,432"/>
+<area shape="rect" id="id3" href="Surveiller" title="Surveiller" alt="" coords="171,2251,249,2265"/>
+<area shape="rect" id="id4" href="Planifier" title="Planifier" alt="" coords="93,1093,174,1107"/>
+<area shape="rect" id="id5" href="Mot" title="Mot" alt="" coords="93,326,175,339"/>
+<area shape="rect" id="id6" href="Souscrire" title="Souscrire" alt="" coords="93,707,184,721"/>
+<area shape="rect" id="id7" href="Analyser" title="Analyser" alt="" coords="171,1694,266,1708"/>
+<area shape="rect" id="id8" href="Facturer" title="Facturer" alt="" coords="171,956,273,970"/>
+<area shape="rect" id="id9" href="Consulter" title="Consulter" alt="" coords="171,2065,289,2079"/>
+<area shape="rect" id="id10" href="Générer" title="Générer" alt="" coords="93,1186,219,1200"/>
+<area shape="rect" id="id11" href="Élaborer" title="Élaborer" alt="" coords="171,1880,301,1894"/>
+<area shape="rect" id="id12" href="Événement" title="Événement" alt="" coords="670,800,806,814"/>
+<area shape="rect" id="id13" href="Créer" title="Créer" alt="" coords="171,1973,309,1986"/>
+<area shape="rect" id="id14" href="Consulter" title="Consulter" alt="" coords="93,1557,233,1571"/>
+<area shape="rect" id="id15" href="Optimiser" title="Optimiser" alt="" coords="171,2158,318,2172"/>
+<area shape="rect" id="id16" href="Gérer" title="Gérer" alt="" coords="171,1787,353,1801"/>
+<area shape="rect" id="id17" href="Répondre" title="Répondre" alt="" coords="93,1371,284,1385"/>
+<area shape="rect" id="id18" href="Consulter" title="Consulter" alt="" coords="93,1464,308,1478"/>
+</map>

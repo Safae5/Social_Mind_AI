@@ -1,0 +1,102 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# SOCIAL MIND AI — AI ENGINE v7.0.0
+# Python 3.11 recommandé · Sans versions épinglées (évite les conflits)
+# ─────────────────────────────────────────────────────────────────────────────
+# Installation :
+#   1. pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+#   2. pip install -r requirements.txt
+#   3. python -m spacy download fr_core_news_md
+#   4. python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab'); nltk.download('stopwords'); nltk.download('wordnet')"
+#   5. playwright install chromium
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+# ── Framework API ─────────────────────────────────────────────────────────────
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+
+
+# ── HTTP ──────────────────────────────────────────────────────────────────────
+requests
+httpx
+
+
+# ── PyTorch — installer séparément AVANT ce fichier (voir étape 1 ci-dessus) ─
+# torch
+# torchaudio
+
+
+# ── HuggingFace ───────────────────────────────────────────────────────────────
+transformers
+accelerate
+huggingface_hub
+diffusers           # SDXL-Turbo (Agent 4 — visuels 1024×1024)
+
+
+# ── Agent 1 — Chef de Compte ─────────────────────────────────────────────────
+openai-whisper      # Whisper large-v3 : transcription réunions client
+moviepy             # Extraction audio depuis MP4/MOV (Agent 1)
+
+
+# ── Agent 2 — Gestionnaire de RS ─────────────────────────────────────────────
+prophet             # Prédiction créneaux optimaux de publication
+playwright          # Scraping Instagram / TikTok / Facebook
+
+
+# ── Agent 3 — Stratège de Contenu ────────────────────────────────────────────
+bertopic            # Clustering thèmes concurrents
+umap-learn          # Réduction dimensionnelle (requis par BERTopic)
+hdbscan             # Clustering hiérarchique (requis par BERTopic)
+gensim              # LDA / topics latents (Gensim)
+
+
+# ── Agents 3, 4 — Sentence Transformers ──────────────────────────────────────
+sentence-transformers   # paraphrase-multilingual-MiniLM-L12-v2 (BERTopic + brand voice)
+keybert                 # Extraction mots-clés (Agents 3, 7)
+
+
+# ── Agents 5, 6 — Analytics + Optimisation Publicitaire ──────────────────────
+xgboost             # Prédiction CTR (Agent 6) + score engagement (Agent 5)
+scipy               # linprog : optimisation budget publicitaire (Agent 6)
+
+
+# ── Agents 5, 6, 7 — Visualisation ───────────────────────────────────────────
+matplotlib          # Graphiques base64 (7 Analytics + 5 Ad Optimizer + 6 Competitive)
+seaborn             # Styling graphiques (heatmaps, distributions)
+
+
+# ── Agent 7 — Veille Concurrentielle ─────────────────────────────────────────
+vaderSentiment      # Analyse sentiment offline — pas de GPU requis
+textblob            # Polarity + subjectivity complémentaire
+wordcloud           # WordCloud hashtags viraux
+
+
+# ── NLP — Agents 1, 3, 7 ─────────────────────────────────────────────────────
+spacy               # NER fr_core_news_md (Agent 1) + lemmatisation (Agent 3)
+nltk                # Tokenisation, stopwords FR+EN (Agents 3, 7)
+
+
+# ── Image ─────────────────────────────────────────────────────────────────────
+Pillow              # Sauvegarde PNG + placeholder SDXL-Turbo (Agent 4)
+
+
+# ── PDF — Tous les agents ─────────────────────────────────────────────────────
+reportlab           # Génération PDF A4 professionnels (tous les 7 agents)
+
+
+# ── Scraping tendances — Agent 3 ──────────────────────────────────────────────
+beautifulsoup4      # Parsing HTML
+lxml                # Parser rapide pour BeautifulSoup
+pytrends            # Google Trends API
+
+
+# ── Data ──────────────────────────────────────────────────────────────────────
+pandas              # DataFrames (Prophet, métriques, historique)
+numpy               # Calculs numériques (Q-Learning, scores)
+
+
+# ── Utilitaires ───────────────────────────────────────────────────────────────
+python-dotenv       # Variables d'environnement (.env)
+cachetools          # Cache en mémoire (singleton modèles ML)
