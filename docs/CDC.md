@@ -5,14 +5,13 @@
 *Plateforme SaaS d\'Automatisation SMMA propulsée par l\'IA*
 
   -----------------------------------------------------------------------
-  **Encadré par**              **Kawtar Idhammou**
+  
   ---------------------------- ------------------------------------------
-  **Réalisé par**              **Safae Bellamine, Amal Maataoui**
+  **Réalisé par**              **Safae Bellamine
 
-  **Filière**                  **Licence Professionnelle en Génie
-                               Informatique**
+  
 
-  **Année Universitaire**      **2025 / 2026**
+  
   -----------------------------------------------------------------------
 
 Spécification des Exigences Logicielles
@@ -146,8 +145,7 @@ Spécification des Exigences Logicielles
   ---------------------- ------------------------------------------------
   Nom du projet          Social Mind AI
 
-  Type de projet         Application Web SaaS --- Projet de Fin d\'Études
-                         en Informatique
+  
 
   Version                1.0 --- Mai 2026
 

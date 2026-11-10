@@ -2,6 +2,7 @@
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Users, CreditCard, Package, Bot } from 'lucide-react'
 import logo from '@/assets/logo.png'
+import { Wordmark } from '@/components/brand/Wordmark'
 
 const NAV = [
   { to: '/admin',              label: 'Vue d\'ensemble', icon: LayoutDashboard, end: true },
@@ -17,7 +18,7 @@ export function AdminSidebar() {
       <div className="h-14 flex items-center gap-2 px-4 border-b border-white/8">
         <img src={logo} alt="Social Mind AI" className="w-6 h-6 object-contain" />
         <div>
-          <p className="text-sm font-semibold text-white leading-none">Social Mind</p>
+          <Wordmark className="text-sm font-semibold leading-none" />
           <p className="text-[10px] text-slate-500 leading-none mt-0.5">Administration</p>
         </div>
       </div>

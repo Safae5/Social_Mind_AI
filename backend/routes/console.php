@@ -115,8 +115,16 @@ Schedule::command('social:poll-metrics')
 
         // ── Agent 5 : Analytics IA ─────────────────────────────────
     // Collecte métriques toutes les 6 heures (Meta Graph API + Playwright)
+    // `users` n'a pas de colonne is_active (seulement `status`, valeurs
+    // 'active'/'inactive' — cf. ligne 77 plus haut) : les 5 Schedule::call
+    // de ce bloc utilisaient toutes `User::where('is_active', true)`, une
+    // colonne inexistante → SQL error à chaque exécution, jamais remontée
+    // nulle part (schedule:work avale l'exception par tâche), donc ces 5
+    // collectes automatiques (Analytics, Ad Optimizer, Competitive Intel)
+    // n'ont jamais tourné une seule fois depuis leur écriture — confirmé en
+    // reproduisant en direct : Schema::hasColumn('users','is_active') = false.
     Schedule::call(function () {
-        \App\Models\User::where('is_active', true)
+        \App\Models\User::where('status', 'active')
             ->whereHas('smAccounts', fn($q) => $q->where('is_active', true))
             ->chunk(50, function ($users) {
                 foreach ($users as $user) {
@@ -128,7 +136,7 @@ Schedule::command('social:poll-metrics')
 
     // Rapport mensuel : 1er de chaque mois à 9h
     Schedule::call(function () {
-        \App\Models\User::where('is_active', true)
+        \App\Models\User::where('status', 'active')
             ->whereHas('smAccounts', fn($q) => $q->where('is_active', true))
             ->chunk(50, function ($users) {
                 foreach ($users as $user) {
@@ -141,7 +149,7 @@ Schedule::command('social:poll-metrics')
     // ── Agent 6 : Optimisation Publicitaire ────────────────────
 // Collecte quotidienne Meta Ads + Google Ads
 Schedule::call(function () {
-    \App\Models\User::where('is_active', true)
+    \App\Models\User::where('status', 'active')
         ->whereHas('aoAccounts', fn($q) => $q->where('is_active', true))
         ->chunk(50, function ($users) {
             foreach ($users as $user) {
@@ -153,7 +161,7 @@ Schedule::call(function () {
 
 // Rapport ROI hebdomadaire : chaque lundi à 8h
 Schedule::call(function () {
-    \App\Models\User::where('is_active', true)->chunk(50, function ($users) {
+    \App\Models\User::where('status', 'active')->chunk(50, function ($users) {
         foreach ($users as $user) {
             \App\Jobs\CollectAdMetricsJob::dispatch($user)->onQueue('ad_optimizer');
         }
@@ -163,7 +171,7 @@ Schedule::call(function () {
 // ── Agent 7 : Veille Concurrentielle ───────────────────────
 // Collecte quotidienne données concurrents à 2h du matin
 Schedule::call(function () {
-    \App\Models\User::where('is_active', true)
+    \App\Models\User::where('status', 'active')
         ->whereHas('ciCompetitorAccounts', fn($q) => $q->where('is_active', true))
         ->chunk(50, function ($users) {
             foreach ($users as $user) {

@@ -147,7 +147,15 @@ class AnalyticsController extends Controller
             ->take(1000)
             ->get()
             ->map(fn($m) => [
-                'date'         => $m->collected_at,
+                // posted_at = date réelle de publication du post ; collected_at
+                // n'est que l'instant où le scraper a tourné (2 valeurs distinctes
+                // sur tout le dataset actuel). data_loader.py dérive hour/day_num/
+                // day_of_week de ce champ "date" pour la heatmap Heure×Jour, Prophet
+                // (minimum 7 jours distincts) et les features XGBoost/RF — avec
+                // collected_at, toutes les métriques s'écrasaient sur 1-2 heures,
+                // rendant la heatmap quasi vide et Prophet perpétuellement sous le
+                // seuil, peu importe le nombre de posts réels accumulés.
+                'date'         => $m->posted_at ?? $m->collected_at,
                 'platform'     => $m->platform,
                 'content_type' => $m->content_type,
                 'likes'        => $m->likes,

@@ -44,7 +44,10 @@ class AnalyticsReportService
             ->take(1000)
             ->get()
             ->map(fn ($m) => [
-                'date'         => $m->collected_at,
+                // Voir AnalyticsController::predict() — posted_at (date réelle de
+                // publication), pas collected_at (instant du scrape), sinon
+                // hour/day_num dérivés côté ai-engine s'écrasent sur 1-2 valeurs.
+                'date'         => $m->posted_at ?? $m->collected_at,
                 'platform'     => $m->platform,
                 'content_type' => $m->content_type,
                 'likes'        => $m->likes,

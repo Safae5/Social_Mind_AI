@@ -11,6 +11,7 @@ import { useQuery }  from '@tanstack/react-query'
 import { toast }     from 'sonner'
 import api from '@/lib/axios'
 import logo from '@/assets/logo.png'
+import { Wordmark } from '@/components/brand/Wordmark'
 
 import DashboardHome          from './pages/DashboardHome'
 import AgentsPage             from './pages/AgentsPage'
@@ -128,9 +129,7 @@ export default function StandardDashboard() {
           {!collapsed && (
             <div className="flex items-center gap-2">
               <img src={logo} alt="Social Mind AI" className="w-8 h-8 object-contain" />
-              <span className="font-bold text-gray-900 text-sm">
-                Social<span className="text-violet-600">Mind</span>
-              </span>
+              <Wordmark theme="light" className="font-bold text-sm" />
             </div>
           )}
           <button

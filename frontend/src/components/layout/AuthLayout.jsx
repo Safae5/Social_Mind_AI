@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import logo from '@/assets/logo.png'
+import { Wordmark } from '@/components/brand/Wordmark'
 
 export default function AuthLayout({ children, title, subtitle }) {
   return (
@@ -18,9 +19,7 @@ export default function AuthLayout({ children, title, subtitle }) {
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2">
             <img src={logo} alt="Social Mind AI" className="w-10 h-10 object-contain" />
-            <span className="text-xl font-bold text-gray-900">
-              Social<span className="text-violet-600">Mind</span> AI
-            </span>
+            <Wordmark theme="light" className="text-xl font-bold" />
           </Link>
         </div>
 

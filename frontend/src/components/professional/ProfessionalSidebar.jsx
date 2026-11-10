@@ -4,6 +4,7 @@ import { Settings, LogOut, Store } from 'lucide-react'
 import { toast } from 'sonner'
 import { useLogout } from '@/hooks/useAuth'
 import logo from '@/assets/logo.png'
+import { Wordmark } from '@/components/brand/Wordmark'
 
 const NAV_ITEMS = [
   { id: 'overview',  label: 'Vue d\'ensemble', icon: '🏠' },
@@ -26,7 +27,7 @@ export function ProfessionalSidebar({ activeTab, onTabChange, profile }) {
         <div className="flex items-center gap-2">
           <img src={logo} alt="Social Mind AI" className="w-8 h-8 object-contain" />
           <div>
-            <p className="text-white text-sm font-bold leading-none">Social Mind</p>
+            <Wordmark className="text-sm font-bold leading-none" />
             <p className="text-indigo-400 text-[10px]">Professional</p>
           </div>
         </div>

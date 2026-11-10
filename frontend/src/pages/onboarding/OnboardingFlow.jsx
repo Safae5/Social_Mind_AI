@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import api from '@/lib/axios'
 import logo from '@/assets/logo.png'
+import { Wordmark } from '@/components/brand/Wordmark'
 
 // ─── Configuration des 8 étapes ────────────────────────────────
 const STEPS = [
@@ -80,7 +81,7 @@ export default function OnboardingFlow() {
           )}
           <div className="flex items-center gap-2">
             <img src={logo} alt="Social Mind AI" className="w-7 h-7 object-contain" />
-            <span className="font-bold text-sm text-gray-900">Social<span className="text-violet-600">Mind</span> AI</span>
+            <Wordmark theme="light" className="font-bold text-sm" />
           </div>
         </div>
 

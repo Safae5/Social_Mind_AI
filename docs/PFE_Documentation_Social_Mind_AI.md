@@ -1,6 +1,6 @@
 # Documentation technique de l'application Social Mind AI
 
-*Rapport rédigé dans le cadre d'un Projet de Fin d'Études — état réel du code et de l'application au 17/09/2026, vérifié en conditions d'exécution réelles (serveurs lancés, requêtes HTTP réelles, agents IA réellement exécutés).*
+*Rapport rédigé dans le cadre d'un Projet personel — état réel du code et de l'application au 17/09/2026, vérifié en conditions d'exécution réelles (serveurs lancés, requêtes HTTP réelles, agents IA réellement exécutés).*
 
 ---
 

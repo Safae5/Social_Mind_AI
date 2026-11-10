@@ -310,6 +310,35 @@ class User extends Authenticatable implements JWTSubject
                     ->where('token_valid', true);
     }
 
+    /**
+     * Comptes Social Manager (Agent 5 : Analytics IA — collecte Meta Graph API).
+     * Relation absente jusqu'ici : routes/console.php appelait déjà
+     * whereHas('smAccounts', ...) dans les tâches planifiées de collecte, ce
+     * qui levait "Call to undefined method User::smAccounts()" à chaque
+     * exécution — confirmé en reproduisant en direct avec schedule:test.
+     */
+    public function smAccounts(): HasMany
+    {
+        return $this->hasMany(SmAccount::class);
+    }
+
+    /**
+     * Comptes Ad Optimizer (Agent 6). Même défaut que smAccounts() ci-dessus.
+     */
+    public function aoAccounts(): HasMany
+    {
+        return $this->hasMany(AoAccount::class);
+    }
+
+    /**
+     * Comptes concurrents suivis par Competitive Intel (Agent 7). Même
+     * défaut que smAccounts() ci-dessus.
+     */
+    public function ciCompetitorAccounts(): HasMany
+    {
+        return $this->hasMany(CiCompetitorAccount::class);
+    }
+
     // ══════════════════════════════════════════════════════════
     // RELATIONS — Abonnements et facturation
     // ══════════════════════════════════════════════════════════

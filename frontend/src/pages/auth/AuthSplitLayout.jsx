@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import heroImage from '@/assets/hero-intelligence.png'
 import logo from '@/assets/logo.png'
+import { Wordmark, WordmarkTagline } from '@/components/brand/Wordmark'
 
 // Split-screen shell for Login/Register only — reuses the exact brand
 // tokens already shipped on the landing page (bg #05060a, cyan→violet
@@ -30,6 +31,11 @@ export default function AuthSplitLayout({
         <div className="absolute inset-0 bg-gradient-to-b from-[#05060a] via-[#05060a]/55 to-[#05060a]" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#05060a]/20 via-transparent to-[#05060a]/80" />
 
+        <div className="absolute top-12 left-12 xl:top-16 xl:left-16 z-10">
+          <Wordmark className="text-2xl font-bold tracking-tight" />
+          <WordmarkTagline className="mt-1.5 text-xs text-white/40 tracking-wide" />
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -53,9 +59,7 @@ export default function AuthSplitLayout({
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-2.5 mb-10 w-fit">
             <img src={logo} alt="Social Mind AI" className="w-8 h-8 object-contain" />
-            <span className="text-[15px] font-semibold text-white tracking-tight">
-              Social<span className="text-cyan-300">Mind</span> AI
-            </span>
+            <Wordmark className="text-[15px] font-semibold tracking-tight" />
           </Link>
 
           <motion.div

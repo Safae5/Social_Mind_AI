@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import logo from '@/assets/logo.png'
+import { Wordmark } from '@/components/brand/Wordmark'
 
 const NAV_LINKS = [
   { href: '#platform', label: 'Platform' },
@@ -34,9 +35,7 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 shrink-0">
           <img src={logo} alt="Social Mind AI" className="w-8 h-8 object-contain" />
-          <span className="text-[15px] font-semibold text-white tracking-tight">
-            Social<span className="text-cyan-300">Mind</span> AI
-          </span>
+          <Wordmark className="text-[15px] font-semibold tracking-tight" />
         </Link>
 
         <div className="hidden md:flex items-center gap-8">

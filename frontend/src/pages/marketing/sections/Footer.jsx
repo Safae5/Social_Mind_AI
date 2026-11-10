@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import logo from '@/assets/logo.png'
+import { Wordmark } from '@/components/brand/Wordmark'
 
 const COLUMNS = [
   {
@@ -41,9 +42,7 @@ export default function Footer() {
           <div className="col-span-2 sm:col-span-1">
             <div className="flex items-center gap-2.5">
               <img src={logo} alt="Social Mind AI" className="w-7 h-7 object-contain" />
-              <span className="text-sm font-semibold text-white">
-                Social<span className="text-cyan-300">Mind</span> AI
-              </span>
+              <Wordmark className="text-sm font-semibold" />
             </div>
             <p className="text-xs text-white/40 mt-4 leading-relaxed max-w-[200px]">
               AI-powered social media intelligence for modern marketing teams.
