@@ -131,9 +131,9 @@ Spécification des Exigences Logicielles
 
   **12.**   **Périmètre MVP et Livrables**                         **20**
 
-  12.1      Phase 1 --- MVP (Soutenance de Fin d\'Études)          20
+  12.1      Phase 1 --- MVP                                        20
 
-  12.2      Phase 2 --- Développement Post-Soutenance              20
+  12.2      Phase 2 --- Développement (new features)               20
 
   **13.**   **Glossaire**                                          **21**
   -------------------------------------------------------------------------
@@ -474,8 +474,8 @@ paiements des clients par les agences SMMA).
   -------------------------------------------------------------------------
 
   -----------------------------------------------------------------------
-  Date de mise en production cible (MVP) : Mai 2026 La Phase 1 (MVP ---
-  Soutenance de Fin d\'Études) comprend : le système d\'authentification,
+  Date de mise en production cible (MVP) : Mai 2026 La Phase 1 (MVP) ---
+  comprend : le système d\'authentification,
   2 plans d\'abonnement avec Stripe, le tableau de bord utilisateur
   standard complet (6 outils IA), et 3 agents IA professionnels
   pleinement opérationnels (Agent Chef de Compte, Analytics IA, Créateur
@@ -1610,10 +1610,10 @@ secteur, sans processus de recherche manuel.
 
 # 12. Périmètre MVP et Livrables
 
-## 12.1 Phase 1 --- MVP (Soutenance de Fin d\'Études)
+## 12.1 Phase 1 --- MVP 
 
 Les composants suivants doivent être pleinement fonctionnels pour la
-soutenance du projet de fin d\'études :
+fin de cette année :
 
 -   Système d\'authentification avec les trois rôles (Utilisateur
     Standard, Professionnel, Admin)
@@ -1638,7 +1638,7 @@ soutenance du projet de fin d\'études :
     implémentés comme structure fonctionnelle avec au moins un endpoint
     opérationnel chacun
 
-## 12.2 Phase 2 --- Développement Post-Soutenance
+## 12.2 Phase 2 --- Développement (new features)
 
 -   Les 7 agents professionnels pleinement opérationnels
 
